@@ -5,11 +5,15 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.blueland.androidwebview.databinding.ActivityMainBinding
@@ -55,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 뒤로 가기 버튼을 두 번 눌렀을 때 종료하기 위한 변수
+    private var backPressedOnce = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,6 +71,29 @@ class MainActivity : AppCompatActivity() {
 
         // WebView 설정
         setupWebView()
+
+        // OnBackPressedDispatcher를 통해 뒤로 가기 버튼 처리
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.webView.canGoBack()) {
+                    // WebView에서 뒤로 갈 수 있으면 WebView에서 뒤로가기
+                    binding.webView.goBack()
+                } else {
+                    // WebView에서 뒤로 갈 수 없으면 두 번 눌러서 종료
+                    if (backPressedOnce) {
+                        finish()
+                    } else {
+                        backPressedOnce = true
+                        Toast.makeText(this@MainActivity, "뒤로 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+
+                        // 2초 안에 다시 누르지 않으면 backPressedOnce 상태 초기화
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            backPressedOnce = false
+                        }, 2000)
+                    }
+                }
+            }
+        })
     }
 
     // WebView 설정 로직을 별도 함수로 분리
