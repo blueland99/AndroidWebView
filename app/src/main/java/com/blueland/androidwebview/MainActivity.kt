@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -113,6 +114,19 @@ class MainActivity : AppCompatActivity() {
                     // 파일 선택 결과 처리
                     fileChooserResultLauncher.launch(intent)
                     return true
+                }
+
+                // ProgressBar 업데이트
+                override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                    // newProgress는 0부터 100까지의 값을 가짐
+                    binding.progressBar.progress = newProgress
+
+                    // 로딩 중일 때는 ProgressBar를 표시, 완료되면 숨김
+                    if (newProgress == 100) {
+                        binding.progressBar.visibility = View.GONE
+                    } else {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
                 }
             }
 

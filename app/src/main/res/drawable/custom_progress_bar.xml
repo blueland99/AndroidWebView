@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="4dp" /> <!-- 모서리 둥글게 -->
+            <solid android:color="#E0E0E0" /> <!-- 배경 색상 -->
+        </shape>
+    </item>
+    <item>
+        <clip>
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp" />
+                <solid android:color="#3F51B5" /> <!-- 진행바 색상 -->
+            </shape>
+        </clip>
+    </item>
+</layer-list>
