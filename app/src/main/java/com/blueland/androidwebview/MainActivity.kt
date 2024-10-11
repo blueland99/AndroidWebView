@@ -1,47 +1,41 @@
 package com.blueland.androidwebview
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.blueland.androidwebview.ui.theme.AndroidWebViewTheme
+import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
+import com.blueland.androidwebview.databinding.ActivityMainBinding
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    /** WebView에서 Android WebView로 테스트할 수 있는 기능을 제공하는 URL
+     * 예)
+     * 기본적인 파일 업로드 기능
+     * 이미지 파일 선택(갤러리 호출 테스트에 유용)
+     */
+    private val webViewUrl = "https://blueimp.github.io/jQuery-File-Upload/"
+
+    // View Binding 객체 선언
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            AndroidWebViewTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
+
+        // DataBinding을 사용하여 레이아웃 초기화
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // WebView 설정
+        setupWebView()
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidWebViewTheme {
-        Greeting("Android")
+    // WebView 설정 로직을 별도 함수로 분리
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setupWebView() {
+        with(binding.webView) {
+            webViewClient = WebViewClient()  // WebViewClient 설정
+            settings.javaScriptEnabled = true  // JavaScript 사용 가능 설정
+            loadUrl(webViewUrl)  // 웹 페이지 로드
+        }
     }
 }
